@@ -1,0 +1,148 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "MiniUI"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+--// SETTINGS
+local fullSize = UDim2.new(0.3, 0, 0.3125, 0)
+
+--// MAIN CONTAINER (dark)
+local container = Instance.new("Frame")
+container.Size = fullSize
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(10, 10, 10) -- darker
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// SIDEBAR (very dark)
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, 0)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = container
+
+--// GRAY DIVIDER LINE (middle)
+local line = Instance.new("Frame")
+line.Size = UDim2.new(0, 1, 1, 0)
+line.Position = UDim2.new(0.3, 0, 0, 0)
+line.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+line.BorderSizePixel = 0
+line.Parent = container
+
+--// CONTENT (lighter than sidebar)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, 0)
+mainFrame.Position = UDim2.new(0.3, 0, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = container
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0.7, 0, 1, 0)
+settingsFrame.Position = UDim2.new(0.3, 0, 0, 0)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+settingsFrame.Visible = false
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Parent = container
+
+--// LABELS
+local mainLabel = Instance.new("TextLabel")
+mainLabel.Text = "Main"
+mainLabel.Size = UDim2.new(1, 0, 1, 0)
+mainLabel.BackgroundTransparency = 1
+mainLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+mainLabel.TextScaled = true
+mainLabel.Parent = mainFrame
+
+local settingsLabel = Instance.new("TextLabel")
+settingsLabel.Text = "Settings"
+settingsLabel.Size = UDim2.new(1, 0, 1, 0)
+settingsLabel.BackgroundTransparency = 1
+settingsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+settingsLabel.TextScaled = true
+settingsLabel.Parent = settingsFrame
+
+--// BUTTON CREATOR (NO HOVER EFFECT)
+local function createButton(text, y)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 25)
+	btn.Position = UDim2.new(0, 0, 0, y)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	btn.BorderSizePixel = 0
+
+	-- no hover effects (intentionally empty)
+	btn.MouseEnter:Connect(function() end)
+	btn.MouseLeave:Connect(function() end)
+
+	btn.Parent = sidebar
+	return btn
+end
+
+local mainButton = createButton("Main", 0)
+local settingsButton = createButton("Settings", 25)
+
+mainButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	settingsFrame.Visible = false
+end)
+
+settingsButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	settingsFrame.Visible = true
+end)
+
+--// DRAG
+local dragging = false
+local dragStart, startPos
+
+container.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = container.Position
+	end
+end)
+
+container.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		container.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+--// TOGGLE (FULL HIDE / SHOW)
+local opened = true
+
+UIS.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.RightAlt then
+		opened = not opened
+
+		if opened then
+			gui.Enabled = true
+			container.Visible = true
+		else
+			-- полностью скрываем GUI
+			container.Visible = false
+			gui.Enabled = false
+		end
+	end
+end)
