@@ -1,0 +1,260 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "BlackHoleHubUI"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local fullSize = UDim2.new(0.3, 0, 0.3125, 0)
+
+--// MAIN CONTAINER
+local container = Instance.new("Frame")
+container.Size = fullSize
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// HEADER
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 35)
+header.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+header.Parent = container
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -10, 1, 0)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "BlackHole Hub"
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = header
+
+local offsetY = 37
+
+--// SIDEBAR
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, -offsetY)
+sidebar.Position = UDim2.new(0, 0, 0, offsetY)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.Parent = container
+
+--// MAIN
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, -offsetY)
+mainFrame.Position = UDim2.new(0.3, 0, 0, offsetY)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Parent = container
+
+--////////////////////////////////////////////////////
+-- AUTO BLOCK (LEFT)
+--////////////////////////////////////////////////////
+
+local autoBlock = Instance.new("Frame")
+autoBlock.Size = UDim2.new(0.48, 0, 0.85, 0)
+autoBlock.Position = UDim2.new(0, 10, 0, 10)
+autoBlock.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+autoBlock.Parent = mainFrame
+Instance.new("UIStroke", autoBlock).Color = Color3.fromRGB(80,80,80)
+
+local autoTitle = Instance.new("TextLabel")
+autoTitle.Size = UDim2.new(1,0,0,18)
+autoTitle.BackgroundTransparency = 1
+autoTitle.Text = "Automation"
+autoTitle.TextSize = 14
+autoTitle.TextColor3 = Color3.fromRGB(255,255,255)
+autoTitle.Font = Enum.Font.GothamBold
+autoTitle.Parent = autoBlock
+
+--////////////////////////////////////////////////////
+-- MOVEMENT BLOCK (RIGHT)
+--////////////////////////////////////////////////////
+
+local moveBlock = Instance.new("Frame")
+moveBlock.Size = UDim2.new(0.48, 0, 0.85, 0)
+moveBlock.Position = UDim2.new(0.52, 0, 0, 10)
+moveBlock.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+moveBlock.Parent = mainFrame
+Instance.new("UIStroke", moveBlock).Color = Color3.fromRGB(80,80,80)
+
+local moveTitle = Instance.new("TextLabel")
+moveTitle.Size = UDim2.new(1,0,0,18)
+moveTitle.BackgroundTransparency = 1
+moveTitle.Text = "Movement"
+moveTitle.TextSize = 14
+moveTitle.TextColor3 = Color3.fromRGB(255,255,255)
+moveTitle.Font = Enum.Font.GothamBold
+moveTitle.Parent = moveBlock
+
+--////////////////////////////////////////////////////
+-- MODE LABEL
+--////////////////////////////////////////////////////
+
+local modeLabel = Instance.new("TextLabel")
+modeLabel.Size = UDim2.new(0.5,0,0,25)
+modeLabel.Position = UDim2.new(0,5,0,30)
+modeLabel.BackgroundTransparency = 1
+modeLabel.Text = "Mode"
+modeLabel.TextColor3 = Color3.fromRGB(220,220,220)
+modeLabel.TextSize = 14
+modeLabel.Font = Enum.Font.Gotham
+modeLabel.TextXAlignment = Enum.TextXAlignment.Left
+modeLabel.Parent = moveBlock
+
+--////////////////////////////////////////////////////
+-- TOGGLE BUTTON (square no rounding)
+--////////////////////////////////////////////////////
+
+local dropdownBtn = Instance.new("TextButton")
+dropdownBtn.Size = UDim2.new(0,22,0,22)
+dropdownBtn.Position = UDim2.new(1,-30,0,32)
+dropdownBtn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+dropdownBtn.Text = ""
+dropdownBtn.Parent = moveBlock
+
+Instance.new("UIStroke", dropdownBtn).Color = Color3.fromRGB(80,80,80)
+
+local arrow = Instance.new("TextLabel")
+arrow.Size = UDim2.new(1,0,1,0)
+arrow.BackgroundTransparency = 1
+arrow.Text = "^"
+arrow.TextSize = 16
+arrow.Font = Enum.Font.GothamBold
+arrow.TextColor3 = Color3.fromRGB(255,255,255)
+arrow.Parent = dropdownBtn
+
+--////////////////////////////////////////////////////
+-- DROPDOWN PANEL (expands DOWN)
+--////////////////////////////////////////////////////
+
+local mode = "Hover"
+
+local dropFrame = Instance.new("Frame")
+dropFrame.Size = UDim2.new(0, 120, 0, 0)
+dropFrame.Position = UDim2.new(0, 5, 0, 60)
+dropFrame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+dropFrame.ClipsDescendants = true
+dropFrame.Parent = moveBlock
+
+Instance.new("UIStroke", dropFrame).Color = Color3.fromRGB(80,80,80)
+
+local function option(text, y)
+	local b = Instance.new("TextButton")
+	b.Size = UDim2.new(1,0,0,25)
+	b.Position = UDim2.new(0,0,0,y)
+	b.Text = text
+	b.TextSize = 14
+	b.BackgroundTransparency = 1
+	b.TextColor3 = Color3.fromRGB(220,220,220)
+	b.Font = Enum.Font.Gotham
+	b.Parent = dropFrame
+
+	b.MouseButton1Click:Connect(function()
+		mode = text
+
+		dropFrame:TweenSize(
+			UDim2.new(0,120,0,0),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Quad,
+			0.25,
+			true
+		)
+	end)
+end
+
+option("Hover",0)
+option("Teleport",25)
+
+-- open / close
+local open = false
+
+dropdownBtn.MouseButton1Click:Connect(function()
+	open = not open
+
+	if open then
+		dropFrame:TweenSize(
+			UDim2.new(0,120,0,50),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Quad,
+			0.25,
+			true
+		)
+	else
+		dropFrame:TweenSize(
+			UDim2.new(0,120,0,0),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Quad,
+			0.2,
+			true
+		)
+	end
+end)
+
+--////////////////////////////////////////////////////
+-- SIDEBAR BUTTONS
+--////////////////////////////////////////////////////
+
+local function button(text,y)
+	local b=Instance.new("TextButton")
+	b.Size=UDim2.new(1,-6,0,32)
+	b.Position=UDim2.new(0,3,0,y+35)
+	b.Text=text
+	b.TextSize=14
+	b.BackgroundTransparency=1
+	b.TextColor3=Color3.fromRGB(220,220,220)
+	b.Parent=sidebar
+
+	local s=Instance.new("UIStroke",b)
+	s.Color=Color3.fromRGB(70,70,70)
+
+	return b
+end
+
+button("Main",0)
+button("Settings",40)
+
+--////////////////////////////////////////////////////
+-- DRAG
+--////////////////////////////////////////////////////
+
+local dragging=false
+local start,sp
+
+header.InputBegan:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=true
+		start=i.Position
+		sp=container.Position
+	end
+end)
+
+header.InputEnded:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=false
+	end
+end)
+
+UIS.InputChanged:Connect(function(i)
+	if dragging and i.UserInputType==Enum.UserInputType.MouseMovement then
+		local d=i.Position-start
+		container.Position=UDim2.new(sp.X.Scale,sp.X.Offset+d.X,sp.Y.Scale,sp.Y.Offset+d.Y)
+	end
+end)
+
+--// TOGGLE GUI
+local opened=true
+
+UIS.InputBegan:Connect(function(i,p)
+	if p then return end
+	if i.KeyCode==Enum.KeyCode.RightAlt then
+		opened=not opened
+		container.Visible=opened
+	end
+end)
