@@ -1,0 +1,303 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "BlackHoleHubUI"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local fullSize = UDim2.new(0.3, 0, 0.3125, 0)
+
+--// CONTAINER
+local container = Instance.new("Frame")
+container.Size = fullSize
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// HEADER
+local headerHeight = 35
+
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, headerHeight)
+header.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+header.BorderSizePixel = 0
+header.Parent = container
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -10, 1, 0)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "BlackHole Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = header
+
+--// TOP LINE
+local topLine = Instance.new("Frame")
+topLine.Size = UDim2.new(1, 0, 0, 2)
+topLine.Position = UDim2.new(0, 0, 0, headerHeight)
+topLine.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+topLine.BorderSizePixel = 0
+topLine.Parent = container
+
+local offsetY = headerHeight + 2
+
+--// SIDEBAR
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, -offsetY)
+sidebar.Position = UDim2.new(0, 0, 0, offsetY)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = container
+
+local sidebarStroke = Instance.new("UIStroke")
+sidebarStroke.Color = Color3.fromRGB(80, 80, 80)
+sidebarStroke.Thickness = 1
+sidebarStroke.Parent = sidebar
+
+--// DIVIDER
+local line = Instance.new("Frame")
+line.Size = UDim2.new(0, 3, 1, -offsetY)
+line.Position = UDim2.new(0.3, 0, 0, offsetY)
+line.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+line.BorderSizePixel = 0
+line.Parent = container
+
+--// CONTENT
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, -offsetY)
+mainFrame.Position = UDim2.new(0.3, 0, 0, offsetY)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = container
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0.7, 0, 1, -offsetY)
+settingsFrame.Position = UDim2.new(0.3, 0, 0, offsetY)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+settingsFrame.Visible = false
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Parent = container
+
+--/////////////////////////////////////////////////////
+--// AUTO BLOCK (LEFT)
+--/////////////////////////////////////////////////////
+
+local autoBlock = Instance.new("Frame")
+autoBlock.Size = UDim2.new(0.48, 0, 0.85, 0)
+autoBlock.Position = UDim2.new(0, 10, 0, 10)
+autoBlock.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+autoBlock.BorderSizePixel = 0
+autoBlock.Parent = mainFrame
+
+Instance.new("UIStroke", autoBlock).Color = Color3.fromRGB(80,80,80)
+
+Instance.new("UICorner", autoBlock).CornerRadius = UDim.new(0,6)
+
+local autoTitle = Instance.new("TextLabel")
+autoTitle.Size = UDim2.new(1,0,0,18)
+autoTitle.BackgroundTransparency = 1
+autoTitle.Text = "Automation"
+autoTitle.TextSize = 14
+autoTitle.Font = Enum.Font.GothamBold
+autoTitle.TextColor3 = Color3.fromRGB(255,255,255)
+autoTitle.Parent = autoBlock
+
+local autoLine = Instance.new("Frame")
+autoLine.Size = UDim2.new(1,0,0,2)
+autoLine.Position = UDim2.new(0,0,0,18)
+autoLine.BackgroundColor3 = Color3.fromRGB(120,120,120)
+autoLine.BorderSizePixel = 0
+autoLine.Parent = autoBlock
+
+local autoFarmLabel = Instance.new("TextLabel")
+autoFarmLabel.Size = UDim2.new(0.7,0,0,30)
+autoFarmLabel.Position = UDim2.new(0,5,0,30)
+autoFarmLabel.BackgroundTransparency = 1
+autoFarmLabel.Text = "AutoFarm"
+autoFarmLabel.TextSize = 14
+autoFarmLabel.TextColor3 = Color3.fromRGB(220,220,220)
+autoFarmLabel.Font = Enum.Font.Gotham
+autoFarmLabel.TextXAlignment = Enum.TextXAlignment.Left
+autoFarmLabel.Parent = autoBlock
+
+-- Google toggle
+local toggle = Instance.new("TextButton")
+toggle.Size = UDim2.new(0,45,0,22)
+toggle.Position = UDim2.new(1,-55,0,35)
+toggle.BackgroundColor3 = Color3.fromRGB(60,60,60)
+toggle.Text = ""
+toggle.Parent = autoBlock
+Instance.new("UICorner", toggle).CornerRadius = UDim.new(1,0)
+
+local knob = Instance.new("Frame")
+knob.Size = UDim2.new(0,18,0,18)
+knob.Position = UDim2.new(0,2,0.5,-9)
+knob.BackgroundColor3 = Color3.fromRGB(255,255,255)
+knob.Parent = toggle
+Instance.new("UICorner", knob).CornerRadius = UDim.new(1,0)
+
+local enabled = false
+
+toggle.MouseButton1Click:Connect(function()
+	enabled = not enabled
+	if enabled then
+		toggle.BackgroundColor3 = Color3.fromRGB(0,170,255)
+		knob.Position = UDim2.new(1,-20,0.5,-9)
+	else
+		toggle.BackgroundColor3 = Color3.fromRGB(60,60,60)
+		knob.Position = UDim2.new(0,2,0.5,-9)
+	end
+end)
+
+--/////////////////////////////////////////////////////
+--// MOVEMENT BLOCK (RIGHT HALF)
+--/////////////////////////////////////////////////////
+
+local moveBlock = Instance.new("Frame")
+moveBlock.Size = UDim2.new(0.48, 0, 0.85, 0)
+moveBlock.Position = UDim2.new(0.52, 0, 0, 10)
+moveBlock.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+moveBlock.BorderSizePixel = 0
+moveBlock.Parent = mainFrame
+
+Instance.new("UIStroke", moveBlock).Color = Color3.fromRGB(80,80,80)
+Instance.new("UICorner", moveBlock).CornerRadius = UDim.new(0,6)
+
+local moveTitle = Instance.new("TextLabel")
+moveTitle.Size = UDim2.new(1,0,0,18)
+moveTitle.BackgroundTransparency = 1
+moveTitle.Text = "Movement"
+moveTitle.TextSize = 14
+moveTitle.TextColor3 = Color3.fromRGB(255,255,255)
+moveTitle.Font = Enum.Font.GothamBold
+moveTitle.Parent = moveBlock
+
+local moveLine = Instance.new("Frame")
+moveLine.Size = UDim2.new(1,0,0,2)
+moveLine.Position = UDim2.new(0,0,0,18)
+moveLine.BackgroundColor3 = Color3.fromRGB(120,120,120)
+moveLine.BorderSizePixel = 0
+moveLine.Parent = moveBlock
+
+local mode = "Hover"
+
+local dropdown = Instance.new("TextButton")
+dropdown.Size = UDim2.new(0.9,0,0,28)
+dropdown.Position = UDim2.new(0.05,0,0,30)
+dropdown.BackgroundColor3 = Color3.fromRGB(30,30,30)
+dropdown.Text = "Hover"
+dropdown.TextSize = 14
+dropdown.TextColor3 = Color3.fromRGB(220,220,220)
+dropdown.Parent = moveBlock
+Instance.new("UICorner", dropdown).CornerRadius = UDim.new(0,6)
+
+local arrow = Instance.new("TextLabel")
+arrow.Size = UDim2.new(0,30,1,0)
+arrow.Position = UDim2.new(1,-30,0,0)
+arrow.BackgroundTransparency = 1
+arrow.Text = "^"
+arrow.TextSize = 18
+arrow.Font = Enum.Font.GothamBold
+arrow.TextColor3 = Color3.fromRGB(255,255,255)
+arrow.Parent = dropdown
+
+dropdown.MouseButton1Click:Connect(function()
+	if mode == "Hover" then
+		mode = "Teleport"
+	else
+		mode = "Hover"
+	end
+	dropdown.Text = mode
+end)
+
+--/////////////////////////////////////////////////////
+--// SIDEBAR BUTTONS
+--/////////////////////////////////////////////////////
+
+local function createButton(text, y)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1,-6,0,32)
+	btn.Position = UDim2.new(0,3,0,y+35)
+	btn.Text = text
+	btn.TextSize = 14
+	btn.BackgroundTransparency = 1
+	btn.TextColor3 = Color3.fromRGB(220,220,220)
+	btn.Font = Enum.Font.GothamBold
+	btn.Parent = sidebar
+
+	local s = Instance.new("UIStroke", btn)
+	s.Color = Color3.fromRGB(70,70,70)
+
+	btn.MouseEnter:Connect(function()
+		btn.TextColor3 = Color3.fromRGB(255,255,255)
+	end)
+
+	btn.MouseLeave:Connect(function()
+		btn.TextColor3 = Color3.fromRGB(220,220,220)
+	end)
+
+	return btn
+end
+
+local mainButton = createButton("Main",0)
+local settingsButton = createButton("Settings",40)
+
+mainButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	settingsFrame.Visible = false
+end)
+
+settingsButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	settingsFrame.Visible = true
+end)
+
+--// DRAG
+local dragging=false
+local dragStart,startPos
+
+header.InputBegan:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=true
+		dragStart=i.Position
+		startPos=container.Position
+	end
+end)
+
+header.InputEnded:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=false
+	end
+end)
+
+UIS.InputChanged:Connect(function(i)
+	if dragging and i.UserInputType==Enum.UserInputType.MouseMovement then
+		local d=i.Position-dragStart
+		container.Position=UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset+d.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset+d.Y
+		)
+	end
+end)
+
+--// TOGGLE GUI
+local opened=true
+
+UIS.InputBegan:Connect(function(i,p)
+	if p then return end
+	if i.KeyCode==Enum.KeyCode.RightAlt then
+		opened=not opened
+		container.Visible=opened
+	end
+end)
