@@ -1,0 +1,183 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "BlackHoleHubUI"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local fullSize = UDim2.new(0.3, 0, 0.3125, 0)
+
+--// CONTAINER
+local container = Instance.new("Frame")
+container.Size = fullSize
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// HEADER
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 25)
+header.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+header.BorderSizePixel = 0
+header.Parent = container
+
+local headerStroke = Instance.new("UIStroke")
+headerStroke.Color = Color3.fromRGB(80, 80, 80)
+headerStroke.Thickness = 1
+headerStroke.Parent = header
+
+--// TITLE (LEFT ALIGNED)
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -10, 1, 0)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "BlackHole Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = header
+
+--// TOP LINE
+local topLine = Instance.new("Frame")
+topLine.Size = UDim2.new(1, 0, 0, 2)
+topLine.Position = UDim2.new(0, 0, 0, 25)
+topLine.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+topLine.BorderSizePixel = 0
+topLine.Parent = container
+
+--// SIDEBAR
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, -27)
+sidebar.Position = UDim2.new(0, 0, 0, 27)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = container
+
+local sidebarStroke = Instance.new("UIStroke")
+sidebarStroke.Color = Color3.fromRGB(80, 80, 80)
+sidebarStroke.Thickness = 1
+sidebarStroke.Parent = sidebar
+
+--// DIVIDER LINE
+local line = Instance.new("Frame")
+line.Size = UDim2.new(0, 3, 1, -27)
+line.Position = UDim2.new(0.3, 0, 0, 27)
+line.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+line.BorderSizePixel = 0
+line.Parent = container
+
+--// CONTENT
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, -27)
+mainFrame.Position = UDim2.new(0.3, 0, 0, 27)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = container
+
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(80, 80, 80)
+mainStroke.Thickness = 1
+mainStroke.Parent = mainFrame
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0.7, 0, 1, -27)
+settingsFrame.Position = UDim2.new(0.3, 0, 0, 27)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+settingsFrame.Visible = false
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Parent = container
+
+local settingsStroke = Instance.new("UIStroke")
+settingsStroke.Color = Color3.fromRGB(80, 80, 80)
+settingsStroke.Thickness = 1
+settingsStroke.Parent = settingsFrame
+
+--// BUTTONS
+local function createButton(text, y)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -4, 0, 25)
+	btn.Position = UDim2.new(0, 2, 0, y + 30)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	btn.BorderSizePixel = 0
+	btn.Parent = sidebar
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(70, 70, 70)
+	stroke.Thickness = 1
+	stroke.Parent = btn
+
+	btn.MouseEnter:Connect(function()
+		btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	end)
+
+	btn.MouseLeave:Connect(function()
+		btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+		btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	end)
+
+	return btn
+end
+
+local mainButton = createButton("Main", 0)
+local settingsButton = createButton("Settings", 25)
+
+mainButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	settingsFrame.Visible = false
+end)
+
+settingsButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	settingsFrame.Visible = true
+end)
+
+--// DRAG (HEADER ONLY)
+local dragging = false
+local dragStart, startPos
+
+header.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = container.Position
+	end
+end)
+
+header.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		container.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+--// TOGGLE
+local opened = true
+
+UIS.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.RightAlt then
+		opened = not opened
+		container.Visible = opened
+	end
+end)
