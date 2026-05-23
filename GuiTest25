@@ -1,0 +1,244 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "BlackHoleHubUI"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local fullSize = UDim2.new(0.3, 0, 0.3125, 0)
+
+--// CONTAINER
+local container = Instance.new("Frame")
+container.Size = fullSize
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// HEADER
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 35)
+header.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+header.Parent = container
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -10, 1, 0)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "BlackHole Hub"
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = header
+
+local offsetY = 37
+
+--// SIDEBAR
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, -offsetY)
+sidebar.Position = UDim2.new(0, 0, 0, offsetY)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.Parent = container
+
+--// MAIN
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, -offsetY)
+mainFrame.Position = UDim2.new(0.3, 0, 0, offsetY)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Parent = container
+
+--////////////////////////////////////////////////////
+-- MOVEMENT BLOCK
+--////////////////////////////////////////////////////
+
+local moveBlock = Instance.new("Frame")
+moveBlock.Size = UDim2.new(0.48, 0, 0.85, 0)
+moveBlock.Position = UDim2.new(0.52, 0, 0, 10)
+moveBlock.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+moveBlock.Parent = mainFrame
+Instance.new("UIStroke", moveBlock).Color = Color3.fromRGB(80,80,80)
+
+local moveTitle = Instance.new("TextLabel")
+moveTitle.Size = UDim2.new(1,0,0,18)
+moveTitle.BackgroundTransparency = 1
+moveTitle.Text = "Movement"
+moveTitle.TextSize = 14
+moveTitle.TextColor3 = Color3.fromRGB(255,255,255)
+moveTitle.Font = Enum.Font.GothamBold
+moveTitle.Parent = moveBlock
+
+--////////////////////////////////////////////////////
+-- MODE
+--////////////////////////////////////////////////////
+
+local modeLabel = Instance.new("TextLabel")
+modeLabel.Size = UDim2.new(0.5,0,0,25)
+modeLabel.Position = UDim2.new(0,5,0,30)
+modeLabel.BackgroundTransparency = 1
+modeLabel.Text = "Mode: Hover"
+modeLabel.TextColor3 = Color3.fromRGB(220,220,220)
+modeLabel.TextSize = 14
+modeLabel.Font = Enum.Font.Gotham
+modeLabel.Parent = moveBlock
+
+--////////////////////////////////////////////////////
+-- SPEED SLIDER
+--////////////////////////////////////////////////////
+
+local maxSpeed = 500
+local speedValue = 0
+
+local speedLabel = Instance.new("TextLabel")
+speedLabel.Size = UDim2.new(1,0,0,20)
+speedLabel.Position = UDim2.new(0,5,0,70)
+speedLabel.BackgroundTransparency = 1
+speedLabel.Text = "Hover Speed: 0 / 500"
+speedLabel.TextColor3 = Color3.fromRGB(200,200,200)
+speedLabel.TextSize = 13
+speedLabel.Font = Enum.Font.Gotham
+speedLabel.TextXAlignment = Enum.TextXAlignment.Left
+speedLabel.Parent = moveBlock
+
+local speedBar = Instance.new("Frame")
+speedBar.Size = UDim2.new(0.9,0,0,6)
+speedBar.Position = UDim2.new(0,5,0,95)
+speedBar.BackgroundColor3 = Color3.fromRGB(40,40,40)
+speedBar.Parent = moveBlock
+Instance.new("UICorner", speedBar).CornerRadius = UDim.new(1,0)
+
+local speedFill = Instance.new("Frame")
+speedFill.Size = UDim2.new(0,0,1,0)
+speedFill.BackgroundColor3 = Color3.fromRGB(0,170,255)
+speedFill.Parent = speedBar
+Instance.new("UICorner", speedFill).CornerRadius = UDim.new(1,0)
+
+local speedKnob = Instance.new("Frame")
+speedKnob.Size = UDim2.new(0,10,0,10)
+speedKnob.Position = UDim2.new(0,0,0.5,-5)
+speedKnob.BackgroundColor3 = Color3.fromRGB(255,255,255)
+speedKnob.Parent = speedBar
+Instance.new("UICorner", speedKnob).CornerRadius = UDim.new(1,0)
+
+local draggingSpeed = false
+
+local function updateSpeed(x)
+	local abs = speedBar.AbsolutePosition.X
+	local size = speedBar.AbsoluteSize.X
+
+	local v = math.clamp((x - abs) / size, 0, 1)
+	speedValue = math.floor(v * maxSpeed)
+
+	speedFill.Size = UDim2.new(v,0,1,0)
+	speedKnob.Position = UDim2.new(v,-5,0.5,-5)
+
+	speedLabel.Text = "Hover Speed: "..speedValue.." / "..maxSpeed
+end
+
+speedKnob.InputBegan:Connect(function(i)
+	if i.UserInputType == Enum.UserInputType.MouseButton1 then
+		draggingSpeed = true
+	end
+end)
+
+UIS.InputEnded:Connect(function(i)
+	if i.UserInputType == Enum.UserInputType.MouseButton1 then
+		draggingSpeed = false
+	end
+end)
+
+UIS.InputChanged:Connect(function(i)
+	if draggingSpeed and i.UserInputType == Enum.UserInputType.MouseMovement then
+		updateSpeed(i.Position.X)
+	end
+end)
+
+--////////////////////////////////////////////////////
+-- FLOAT HEIGHT SLIDER (NEW)
+--////////////////////////////////////////////////////
+
+local maxFloat = 500
+local floatValue = 0
+
+local floatLabel = Instance.new("TextLabel")
+floatLabel.Size = UDim2.new(1,0,0,20)
+floatLabel.Position = UDim2.new(0,5,0,125)
+floatLabel.BackgroundTransparency = 1
+floatLabel.Text = "Float Height: 0 / 500"
+floatLabel.TextColor3 = Color3.fromRGB(200,200,200)
+floatLabel.TextSize = 13
+floatLabel.Font = Enum.Font.Gotham
+floatLabel.TextXAlignment = Enum.TextXAlignment.Left
+floatLabel.Parent = moveBlock
+
+local floatBar = Instance.new("Frame")
+floatBar.Size = UDim2.new(0.9,0,0,6)
+floatBar.Position = UDim2.new(0,5,0,150)
+floatBar.BackgroundColor3 = Color3.fromRGB(40,40,40)
+floatBar.Parent = moveBlock
+Instance.new("UICorner", floatBar).CornerRadius = UDim.new(1,0)
+
+local floatFill = Instance.new("Frame")
+floatFill.Size = UDim2.new(0,0,1,0)
+floatFill.BackgroundColor3 = Color3.fromRGB(0,170,255)
+floatFill.Parent = floatBar
+Instance.new("UICorner", floatFill).CornerRadius = UDim.new(1,0)
+
+local floatKnob = Instance.new("Frame")
+floatKnob.Size = UDim2.new(0,10,0,10)
+floatKnob.Position = UDim2.new(0,0,0.5,-5)
+floatKnob.BackgroundColor3 = Color3.fromRGB(255,255,255)
+floatKnob.Parent = floatBar
+Instance.new("UICorner", floatKnob).CornerRadius = UDim.new(1,0)
+
+local draggingFloat = false
+
+local function updateFloat(x)
+	local abs = floatBar.AbsolutePosition.X
+	local size = floatBar.AbsoluteSize.X
+
+	local v = math.clamp((x - abs) / size, 0, 1)
+	floatValue = math.floor(v * maxFloat)
+
+	floatFill.Size = UDim2.new(v,0,1,0)
+	floatKnob.Position = UDim2.new(v,-5,0.5,-5)
+
+	floatLabel.Text = "Float Height: "..floatValue.." / "..maxFloat
+end
+
+floatKnob.InputBegan:Connect(function(i)
+	if i.UserInputType == Enum.UserInputType.MouseButton1 then
+		draggingFloat = true
+	end
+end)
+
+UIS.InputEnded:Connect(function(i)
+	if i.UserInputType == Enum.UserInputType.MouseButton1 then
+		draggingFloat = false
+	end
+end)
+
+UIS.InputChanged:Connect(function(i)
+	if draggingFloat and i.UserInputType == Enum.UserInputType.MouseMovement then
+		updateFloat(i.Position.X)
+	end
+end)
+
+--////////////////////////////////////////////////////
+-- TOGGLE GUI
+--////////////////////////////////////////////////////
+
+local opened = true
+
+UIS.InputBegan:Connect(function(i,p)
+	if p then return end
+	if i.KeyCode == Enum.KeyCode.RightAlt then
+		opened = not opened
+		container.Visible = opened
+	end
+end)
