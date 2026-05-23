@@ -1,0 +1,54 @@
+--// UI Creation
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "SideMenuUI"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+--// LEFT SIDE (Main area - 75%)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.75, 0, 1, 0)
+mainFrame.Position = UDim2.new(0.25, 0, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Parent = gui
+
+--// SETTINGS FRAME (same size as main, 25% right side)
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0.75, 0, 1, 0)
+settingsFrame.Position = UDim2.new(0.25, 0, 0, 0)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+settingsFrame.Visible = false
+settingsFrame.Parent = gui
+
+--// RIGHT SIDEBAR (25%)
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.25, 0, 1, 0)
+sidebar.Position = UDim2.new(0, 0, 0, 0)
+sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+sidebar.Parent = gui
+
+--// Button creator
+local function createButton(text, position)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 50)
+	btn.Position = UDim2.new(0, 0, 0, position)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Parent = sidebar
+	return btn
+end
+
+--// Buttons
+local mainButton = createButton("Main", 0)
+local settingsButton = createButton("Settings", 50)
+
+--// Switching logic
+mainButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	settingsFrame.Visible = false
+end)
+
+settingsButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	settingsFrame.Visible = true
+end)
