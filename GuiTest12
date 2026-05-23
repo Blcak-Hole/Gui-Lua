@@ -1,0 +1,145 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "BlackHoleHubUI"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player:WaitForChild("PlayerGui")
+
+--// SIZE
+local fullSize = UDim2.new(0.3, 0, 0.3125, 0)
+
+--// MAIN CONTAINER
+local container = Instance.new("Frame")
+container.Size = fullSize
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// HEADER (FULL WIDTH TOP BAR)
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 25)
+header.Position = UDim2.new(0, 0, 0, 0)
+header.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+header.BorderSizePixel = 0
+header.Parent = container
+
+--// TITLE INSIDE HEADER
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 1, 0)
+title.BackgroundTransparency = 1
+title.Text = "BlackHole Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = header
+
+--// FULL WIDTH LINE UNDER HEADER
+local topLine = Instance.new("Frame")
+topLine.Size = UDim2.new(1, 0, 0, 2)
+topLine.Position = UDim2.new(0, 0, 0, 25)
+topLine.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+topLine.BorderSizePixel = 0
+topLine.Parent = container
+
+--// SIDEBAR
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, 0)
+sidebar.Position = UDim2.new(0, 0, 0, 27)
+sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = container
+
+--// VERTICAL DIVIDER LINE
+local line = Instance.new("Frame")
+line.Size = UDim2.new(0, 3, 1, -27)
+line.Position = UDim2.new(0.3, 0, 0, 27)
+line.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+line.BorderSizePixel = 0
+line.Parent = container
+
+--// CONTENT
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, -27)
+mainFrame.Position = UDim2.new(0.3, 0, 0, 27)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = container
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0.7, 0, 1, -27)
+settingsFrame.Position = UDim2.new(0.3, 0, 0, 27)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+settingsFrame.Visible = false
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Parent = container
+
+--// LABELS
+local mainLabel = Instance.new("TextLabel")
+mainLabel.Text = "Main"
+mainLabel.Size = UDim2.new(1, 0, 1, 0)
+mainLabel.BackgroundTransparency = 1
+mainLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+mainLabel.TextScaled = true
+mainLabel.Parent = mainFrame
+
+local settingsLabel = Instance.new("TextLabel")
+settingsLabel.Text = "Settings"
+settingsLabel.Size = UDim2.new(1, 0, 1, 0)
+settingsLabel.BackgroundTransparency = 1
+settingsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+settingsLabel.TextScaled = true
+settingsLabel.Parent = settingsFrame
+
+--// BUTTONS
+local function createButton(text, y)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 25)
+	btn.Position = UDim2.new(0, 0, 0, y + 30)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	btn.BorderSizePixel = 0
+	btn.Parent = sidebar
+
+	btn.MouseEnter:Connect(function()
+		btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+		btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	end)
+
+	btn.MouseLeave:Connect(function()
+		btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+		btn.TextColor3 = Color3.fromRGB(200, 200, 200)
+	end)
+
+	return btn
+end
+
+local mainButton = createButton("Main", 0)
+local settingsButton = createButton("Settings", 25)
+
+mainButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	settingsFrame.Visible = false
+end)
+
+settingsButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	settingsFrame.Visible = true
+end)
+
+--// TOGGLE
+local opened = true
+
+UIS.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.RightAlt then
+		opened = not opened
+		container.Visible = opened
+	end
+end)
