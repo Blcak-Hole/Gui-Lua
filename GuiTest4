@@ -1,0 +1,123 @@
+local player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+--// GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "MiniUI"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+--// Main container (15%)
+local container = Instance.new("Frame")
+container.Size = UDim2.new(0.15, 0, 0.15, 0)
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
+container.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+container.BorderSizePixel = 0
+container.Parent = gui
+
+--// Sidebar
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0.3, 0, 1, 0)
+sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = container
+
+--// Main content
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.7, 0, 1, 0)
+mainFrame.Position = UDim2.new(0.3, 0, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = container
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0.7, 0, 1, 0)
+settingsFrame.Position = UDim2.new(0.3, 0, 0, 0)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+settingsFrame.Visible = false
+settingsFrame.BorderSizePixel = 0
+settingsFrame.Parent = container
+
+--// Button creator
+local function createButton(text, y)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 25)
+	btn.Position = UDim2.new(0, 0, 0, y)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.BorderSizePixel = 0
+	btn.Parent = sidebar
+	return btn
+end
+
+local mainButton = createButton("Main", 0)
+local settingsButton = createButton("Settings", 25)
+
+--// Switching
+mainButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = true
+	settingsFrame.Visible = false
+end)
+
+settingsButton.MouseButton1Click:Connect(function()
+	mainFrame.Visible = false
+	settingsFrame.Visible = true
+end)
+
+--// DRAG SYSTEM
+local dragging = false
+local dragInput, dragStart, startPos
+
+container.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = container.Position
+	end
+end)
+
+container.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		container.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+--// OPEN/CLOSE ANIMATION
+local opened = true
+local originalSize = container.Size
+local closedSize = UDim2.new(0, 0, 0, 0)
+
+local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+local function toggleUI()
+	if opened then
+		local tween = TweenService:Create(container, tweenInfo, {Size = closedSize})
+		tween:Play()
+	else
+		local tween = TweenService:Create(container, tweenInfo, {Size = originalSize})
+		tween:Play()
+	end
+	opened = not opened
+end
+
+--// RightAlt toggle
+UIS.InputBegan:Connect(function(input, processed)
+	if processed then return end
+	if input.KeyCode == Enum.KeyCode.RightAlt then
+		toggleUI()
+	end
+end)
