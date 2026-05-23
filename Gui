@@ -1,0 +1,35 @@
+-- Simple GitHub-loaded GUI for Roblox
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "GitHubGUI"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.Parent = gui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Text = "GitHub GUI"
+title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Parent = frame
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 200, 0, 50)
+button.Position = UDim2.new(0.5, -100, 0.5, -25)
+button.Text = "Click me"
+button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.Parent = frame
+
+button.MouseButton1Click:Connect(function()
+    button.Text = "Clicked!"
+    wait(1)
+    button.Text = "Click me"
+end)
